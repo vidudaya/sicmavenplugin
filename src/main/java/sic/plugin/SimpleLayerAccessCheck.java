@@ -42,7 +42,7 @@ public class SimpleLayerAccessCheck {
 
                 for (Tag tag : serverTags) {
                     if (tag.text().length() > 0 && !tag.text().equals(layerRule.getServer())) {
-                        System.out.println("\t" + classDoc.name()
+                        System.out.println("\t[Error - Layer Invariants Violation] " + classDoc.name()
                                 + " violates the layered architecture by accessing " + tag.text() + " as a client");
                         isPass = false;
                         sb.append("\t" + classDoc.name()
@@ -52,7 +52,7 @@ public class SimpleLayerAccessCheck {
 
                 for (Tag tag : clientTags) {
                     if (tag.text().length() > 0 && !tag.text().equals(layerRule.getClient())) {
-                        System.out.println("\t" + classDoc.name()
+                        System.out.println("\t[Error - Layer Invariants Violation] " + classDoc.name()
                                 + " violates the layered architecture by accessing " + tag.text() + " as a server");
                         isPass = false;
                         sb.append("\t" + classDoc.name()
@@ -61,7 +61,7 @@ public class SimpleLayerAccessCheck {
                 }
 
                 if (isPass) {
-                    System.out.println("\tClass " + classDoc.name() + " PASSED");
+                    System.out.println("\tClass " + classDoc.name() + " Layer invariants check PASSED");
                 } else {
                     Support.isBuildPassed = false;
                     Support.buildFailureMsg = "layered architecture violations detected !!!\n".concat(sb.toString());

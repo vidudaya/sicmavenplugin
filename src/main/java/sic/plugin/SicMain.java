@@ -28,6 +28,13 @@ public class SicMain extends AbstractMojo {
         getLog().info("scanning the project ......");
         Support.layerRuleFileLocation = layerRuleFileLocation;
 
+        Main.execute(new String[]{"-doclet", "sic.plugin.CustomExceptionsCheck", "-docletpath"
+                , "."
+                , "-sourcepath"
+                , javaSourceLocation
+                , "-subpackages"
+                , javaSubPackageLocation});
+
         Main.execute(new String[]{"-doclet", "sic.plugin.DuplicateFunctionalityCheck", "-docletpath"
                 , "."
                 , "-sourcepath"
