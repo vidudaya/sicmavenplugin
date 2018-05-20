@@ -12,11 +12,15 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+@SuppressWarnings("unused")
 public class SimpleLayerAccessCheck {
 
-    static Map<String, SimpleLayer> layerRulesMap = new HashMap<String, SimpleLayer>();
+    private static Map<String, SimpleLayer> layerRulesMap = new HashMap<String, SimpleLayer>();
 
     public static boolean start(RootDoc root) throws IOException, ParseException {
         processRules();
@@ -34,7 +38,7 @@ public class SimpleLayerAccessCheck {
             SimpleLayer layerRule = layerRulesMap.get(layerName);
 
             ClassDoc[] classes = layer.allClasses();
-            boolean isPass = true;
+            boolean isPass;
             for (ClassDoc classDoc : classes) {
                 isPass = true;
                 Tag[] serverTags = classDoc.tags("sic.server");
@@ -45,8 +49,7 @@ public class SimpleLayerAccessCheck {
                         System.out.println("\t[Error - Layer Invariants Violation] " + classDoc.name()
                                 + " violates the layered architecture by accessing " + tag.text() + " as a client");
                         isPass = false;
-                        sb.append("\t" + classDoc.name()
-                                + " violates the layered architecture by accessing " + tag.text() + " as a client\n");
+                        sb.append("\t").append(classDoc.name()).append(" violates the layered architecture by accessing ").append(tag.text()).append(" as a client\n");
                     }
                 }
 
@@ -55,8 +58,7 @@ public class SimpleLayerAccessCheck {
                         System.out.println("\t[Error - Layer Invariants Violation] " + classDoc.name()
                                 + " violates the layered architecture by accessing " + tag.text() + " as a server");
                         isPass = false;
-                        sb.append("\t" + classDoc.name()
-                                + " violates the layered architecture by accessing " + tag.text() + " as a server\n");
+                        sb.append("\t").append(classDoc.name()).append(" violates the layered architecture by accessing ").append(tag.text()).append(" as a server\n");
                     }
                 }
 
@@ -70,7 +72,7 @@ public class SimpleLayerAccessCheck {
         }
     }
 
-    public static void processRules() throws IOException, ParseException {
+    private static void processRules() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         //Use JSONObject for simple JSON and JSONArray for array of JSON.
         JSONObject data = (JSONObject) parser.parse(
@@ -80,9 +82,7 @@ public class SimpleLayerAccessCheck {
         String json = data.toJSONString();
 
         JSONArray msg = (JSONArray) data.get("layers");
-        Iterator<JSONObject> iterator = msg.iterator();
-        while (iterator.hasNext()) {
-            JSONObject layerJson = iterator.next();
+        for (JSONObject layerJson : (Iterable<JSONObject>) msg) {
             String layerName = (String) layerJson.get("name");
             String serverLayer = (String) layerJson.get("server");
             String clientLayer = (String) layerJson.get("client");
@@ -98,21 +98,17 @@ class SimpleLayer {
     private String server;
     private String client;
 
-    public SimpleLayer(String name, String server, String client) {
+    SimpleLayer(String name, String server, String client) {
         this.name = name;
         this.server = server;
         this.client = client;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getServer() {
+    String getServer() {
         return server;
     }
 
-    public String getClient() {
+    String getClient() {
         return client;
     }
 
@@ -126,6 +122,7 @@ class SimpleLayer {
     }
 }
 
+@SuppressWarnings("unused")
 class Layer {
     private String name;
     private List<Layer> servers;
